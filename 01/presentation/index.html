@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Clang Static Analyzer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/night.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="reveal.js/lib/js/html5shiv.js"></script>
+		<![endif]-->
+		
+		<style>
+		    .spacer {height: 4em};
+		    p {padding-top: 2em;}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Clang Static Analyzer</h1>
+					
+					<div class='spacer'></div>
+					
+					<h3>Paul Nechifor</h3>
+					<h3>Valentin Schipor</h3>
+				</section>
+
+				<section>
+					<h2>Contents</h2>
+					<ol>
+					    <li>History</li>
+					    <li>Usage</li>
+					    <li>Cases</li>
+					    <li>Comparisons</li>
+					</ol>
+				</section>
+				
+				<section data-background="#8c4738">
+					<h1>1. History</h1>
+				</section>
+				
+				<section>
+					<h2>LLVM Compiler Infrastucture</h2>
+					<p>A collection of <strong>modular</strong> compiler and toolchain technologies.</p>
+					<p>Core technologies:</p>
+					<ul>
+					    <li>LLVM IR (intermediate representation)
+					        <ul><li>
+					        machine independent assembly language
+					        </li></ul>
+					    </li>
+					    <li>Optimizer and code generator for LLVM IR.</li>
+					    <li>Clang (main compiler)</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Frontend, Optimizer, Backend</h2>
+					<img src='res/LLVMCompiler1.png' alt='LLVM Schema' style='width: 90%;'/>
+					
+					<p>(from <a href='http://www.aosabook.org/en/llvm.html'>the AOSA book</a>)</p>
+				</section>
+				
+				<section>
+					<h2>Clang</h2>
+					<p>A C language family frontend for LLVM.</p>
+					<ul>
+					    <li>Open source.</li>
+					    <li>Developed by Google, Apple and others.</li>
+					    <li>Compatible with GCC.
+					        <ul>
+					            <li>Less CPU and memory intensive at compiling.</li>
+					            <li>Produces marginaly less optimal code.</li>
+					        </ul>
+					    </li>
+					    <li>Other advantages: C++11 complete, default in growing number of Unix OSes and Linux distros</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Clang Static Analyzer</h2>
+				</section>
+				
+				<section data-background="#8c4738">
+					<h1>2. Usage</h1>
+					
+					
+				</section>
+				
+				
+				<section>
+					<h2>Compared to GCC</h2>
+				</section>
+				
+				<section>
+				    <h2>Sources</h2>
+				    <ul>
+				        <li><a href="http://llvm.org">llvm.org</a></li>
+				        <li><a href="http://en.wikipedia.org/wiki/Clang">en.wikipedia.org/wiki/Clang</a></li>
+				        <li><a href="http://www.aosabook.org/en/llvm.html">aosabook.org/en/llvm.html</a></li>
+				        <!--http://clang.llvm.org/diagnostics.html-->
+				    </ul>
+				</section>
+
+				<section>
+					<h1>Questions?</h1>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.min.js"></script>
+
+		<script>
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+				
+                // The "normal" size of the presentation, aspect ratio will be preserved
+                // when the presentation is scaled to fit different resolutions. Can be
+                // specified using percentage units.
+                width: 1024,
+                height: 768,
+
+                // Factor of the display size that should remain empty around the content
+                margin: 0.0,
+
+                // Bounds for smallest/largest possible scale to apply to content
+                minScale: 0.2,
+                maxScale: 4.0,
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
