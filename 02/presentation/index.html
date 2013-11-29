@@ -47,11 +47,18 @@
           <h2>Agenda</h2>
           <ol>
             <li>Overview</li>
+            <li>PHP regex eval</li>
+            <li>Linux Process Trace</li>
+            <li>PE Code Injection</li>
+            <li>Hacking 3D Space Pinball</li>
+            <li>Node.js Debugger Attachment</li>
+            <li>Bonus</li>
+            <li>Comparisons</li>
           </ol>
         </section>
           
         <section>
-          <h1>1. Overview</h1>
+          <h1>Overview</h1>
         </section>
           
         <section>
@@ -157,7 +164,6 @@ before() : all() {
         </section>
           
         <section>
-          <h2>PHP regex eval</h2>
           <ul>
             <li>PHP provides the <code>e</code> modifier which interprets the replacing string.</li>
           </ul>
@@ -202,58 +208,10 @@ before() : all() {
         "/^" . $from_prefix . "/",
         $to_prefix, $current);</code></pre>
             </li>
-            <li>If <pre class='inline'><code class='php'>$from_prefix</code></pre> ends with <pre class='inline'><code class='php'>"/e\x00"</code></pre>, the last <pre class='inline'><code class='php'>"/"</code></pre> is ignored and </li>
+            <li>If <pre class='inline'><code class='php'>$from_prefix</code></pre> ends with <pre class='inline'><code class='php'>"/e\x00"</code></pre>, the last <pre class='inline'><code class='php'>"/"</code></pre> isn't the one which ends the regex.</li>
           </ul>
         </section>
-          
-        <section data-background="res/assembly-cover.jpg">
-          <h1 style="color:#FFF">PE Code Injection</h1>
-        </section>
-          
-        <section>
-          <h2>Portable Executable (PE) Code Injection</h2>
-          <ul>
-            <li>Replacing/inserting machine code with own logic.<</li>
-            <li>Not necesarily distructive. One could use this for spyware.</li>
-            <li>Patching system components in order to disable security.</li>
-          </ul>
-        </section>
-          
-        <section>
-          <h2>Protection</h2>
-          <ul>
-            <li>Options:
-              <ul>
-                <li>Obfuscation, using a packing procedure that:
-                  <ul>
-                    <li>alters file structures</li>
-                    <li>encrypts and compresses file sections</li>
-                    <li>injects code to unpack</li>
-                  </ul>
-                </li>
-                <li>fingerprinting</li>
-                <li>license enforcement (calling the po-po)</li>
-                <li>address space layout randomization</li>
-              </ul>
-            </li>
-            <li>Bad parts: performance downgrade.</li>
-          </ul>
-        </section>
-          
-        <section>
-          <h2>PE Injection: a basic example</h2>
-          <p>Opening a message box at begining of a program using OllyDbg.</p>
-        </section>
-          
-        <section>
-          <h2>Examples:</h2>
-          <ul>
-            <li>Patched trojan uses a </li>
-          </ul>
-          
-          http://en.wikipedia.org/wiki/Patched_(malware)
-        </section>
-          
+        
         <section data-background="res/tracing-cover.jpg">
           <h1 style="color:#FFF">Linux Process Trace</h1>
         </section>
@@ -638,6 +596,185 @@ services.exe loads boot32drv.sys</pre>
               to <code>windowsupdate.microsoft.com</code> to first test the connection.</li>
           </ul>
         </section>
+        
+
+          
+        <section data-background="res/assembly-cover.jpg">
+          <h1 style="color:#FFF">PE Code Injection</h1>
+        </section>
+          
+        <section>
+          <ul>
+            <li>Portable Executable (PE) is the executable format for most Windows files (exe, dll, et al).</li>
+            <li>Method: replacing/inserting machine code with own logic in existent binary.</li>
+            <li>Used for:
+              <ul>
+                <li>cracking games</li>
+                <li>distributing spyware</li>
+                <li>patching system components in order to disable security</li>
+                <li>modifying code with lost source code :)</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>Protection</h2>
+          <ul>
+            <li>Options:
+              <ul>
+                <li>Obfuscation, using a packing procedure that:
+                  <ul>
+                    <li>alters file structures</li>
+                    <li>encrypts and compresses file sections</li>
+                    <li>injects code to unpack</li>
+                  </ul>
+                </li>
+                <li>fingerprinting</li>
+                <li>license enforcement (calling the police)</li>
+                <li>address space layout randomization</li>
+              </ul>
+            </li>
+            <li>Bad parts: performance downgrade.</li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>PE Injection Example</h2>
+          <p>Opening a message box at begining of a program using OllyDbg.</p>
+          <p>Pseudo assembly:</p>
+          <pre><code class="java">origin:
+    jmp code_cave
+intact_origin:
+...
+my_str:
+db "The text"
+code_cave:
+    push 0        ; Dialog type (0 = with an 'OK' button).
+    push my_str   ; Dialog title (same as message).
+    push my_str   ; Dialog message.
+    push 0        ; Owning window (0 = none);
+    call user32.MessageBoxA
+restored_origin:
+    &lt;starts like origin&gt;
+    jmp intact origin</code></pre>
+        </section>
+          
+        <section>
+          <h2>Video Demo</h2>
+        </section>
+          
+        <section>
+          <h2>Examples</h2>
+          <ul>
+            <li><a href="http://en.wikipedia.org/wiki/Patched_(malware)">Patched</a> trojan</li>
+          </ul>
+        </section>
+          
+        <section data-background="#000000">
+          <h1 style="color:#FFF">Hacking 3D Space Pinball</h1>
+        </section>
+
+        <section>
+          <ul>
+            <li>Using assembly code and reverse engineering techniques, rewriting some subroutines</li>
+            <li>Inserting code at runtime provides exploiting opportunities. </li>
+            <li>This is the way cracks, cheats, trainers are created. </li>
+            <li>It applies to a broad field of apps, starting with utilities up to graphic intensive application/ video postproduction app, games. Most of exploits are done by reverse engineering and runtime stack code injection/modification.</li>
+          </ul>
+        </section>
+       
+        <section>
+          <p>Getting some points on pinball to scan the addresses. Opening the process of the app with Cheat-engine 6. 
+          </p><img src="res/pb/1.png"/>
+        </section>
+          
+        <section>
+          <p>Scanning for the address that stores the score: 14500.</p>
+          <img src="res/pb/2.png"/>
+        </section>
+          
+        <section>
+          <p>Let’s find what write to this address.</p>
+          <img src="res/pb/3.png"/>
+        </section>
+          
+        <section>
+          <p>Putting a breakpoint on this address and disassembling.</p>
+          <img src="res/pb/4.png"/>
+        </section>
+          
+        <section>
+          <p>This is the instruction that changes game score<br/>
+[eax] has a pointer value<br/>
+move	[eax]ecx  takes the value from ecx and write it to the eax register</p>
+          <img src="res/pb/5.png"/>
+        </section>
+          
+        <section>
+          <p>Selected area is the function that operates the score.</p>
+          <img src="res/pb/6.png"/>
+        </section>
+          
+        <section>
+          <p>Let’s find out who’s calling this function.</p>
+          <img src="res/pb/7.png"/>
+        </section>
+          
+        <section>
+          <p>Full stack view (bottom-right corner).</p>
+          <img src="res/pb/8.png"/>
+        </section>
+          
+        <section>
+          <p>Where the score function is called, the score argument is passed.</p>
+          <img src="res/pb/9.png"/>
+        </section>
+          
+        <section>
+          <p>ASM code injection before the function call.</p>
+          <img src="res/pb/10.png"/>
+        </section>
+          
+        <section>
+          <p>ASM code injection before the function call.</p>
+          <img src="res/pb/11.png"/>
+        </section>
+          
+        <section>
+          <p>ASM code injection before the function call.</p>
+          <img src="res/pb/12.png"/>
+        </section>
+          
+        <section>
+          <p>Creating a subroutine, allocating some memory and putting the instructions there.</p>
+          <img src="res/pb/13.png"/>
+        </section>
+          
+        <section>
+          <p>Writing our code before that code executes, changing the outcome of it. Dividing the score by 100</p>
+          <img src="res/pb/14.png"/>
+        </section>
+          
+        <section>
+          <p>Injecting the code.</p>
+          <img src="res/pb/15.png"/>
+        </section>
+          
+        <section>
+          <p>Injecting the code.</p>
+          <img src="res/pb/16.png"/>
+        </section>
+          
+        <section>
+          <p>Running the modified game.</p>
+          <img src="res/pb/17.png"/>
+        </section>
+          
+        <section>
+          <p>Every points scored are divided by 100.</p>
+          <img src="res/pb/18.png"/>
+        </section>
           
         <section data-background="res/node-cover.jpg">
           <h1 style="color:#FFF">Node.js Debugger Attachment</h1>
@@ -658,12 +795,12 @@ repl</code></pre>
             </li>
             <li>The program can be altered in everyway from that context.</li>
           </ul>
-          
         </section>
           
-        <!--<section>
-          <video data-autoplay src="res/node.mp4" style='height: 100%;'></video>
-        </section>-->
+        <section>
+          <!--<video data-autoplay src="res/node.mp4" style='height: 100%;'></video>-->
+          <h2>Video demo</h2>
+        </section>
         
         <section>
           <h2>Bonus: Easy Hijacking</h2>
@@ -693,22 +830,22 @@ repl</code></pre>
         
         <section>
           <h2>General Prevention</h2>
+          <p>It's generaly hard to prevent on owned machines since debugging
+            tools are necessary.</p>
           <ul>
             <li>Sanitize inputs.</li>
+            <li>Escape dangerous characters.</li>
+            <li>Runtime image hash validation.</li>
+            <li>RX bit</li>
           </ul>
         </section>
           
-        <section>
-          <h2>Comparisons</h2>
-          <ul>
-            <li>...</li>
-          </ul>
-        </section>
-          
-        <section>
+        <section>          
           <h2>Conclusions</h2>
           <ul>
-            <li>The most useful injection type in the day-to-day life.</li>
+            <li>The most dangerous injection type as compared to the rest.</li>
+            <li>Impact: Very severe since anything can be executed (depending on the permissions).</li>
+            <li>The gaming industry loses billions of dollars every year because of gaming cracking.</li>
           </ul>
         </section>
         
@@ -724,6 +861,7 @@ repl</code></pre>
             <li><a href="http://www.cert.pl/news/5874/langswitch_lang/en">www.cert.pl/news/5874/langswitch_lang/en</a></li>
             <li><a href="http://www.crysys.hu/skywiper/skywiper.pdf">www.crysys.hu/skywiper/skywiper.pdf</a></li>
             <li><a href="http://www.linuxjournal.com/article/6210">www.linuxjournal.com/article/6210</a></li>
+            <li><a href="http://www.progamercity.net/ghack-tut/5206-tutorial-game-hacking-tutorials-perfectsdaily.html">progamercity.net/ghack-tut/5206-tutorial-game-hacking-tutorials-perfectsdaily.html</a></li>
           </ul>
           
           <h3>Resources</h3>
@@ -739,7 +877,7 @@ repl</code></pre>
         <section data-state="shaderload" data-background="#000">
           <h1 style="color:#FFF">Questions?</h1>
         </section>
-          
+
       </div>
     </div>
       
