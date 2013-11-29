@@ -47,7 +47,7 @@ pre .python .exception,
 pre .python .built_in,
 pre .literal,
 pre .tex .special {
-  color: #EFEFAF;
+  color: #777718;
 }
 
 pre .diff .chunk,

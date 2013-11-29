@@ -51,6 +51,10 @@
         </section>
           
         <section>
+          <h1>1. Overview</h1>
+        </section>
+          
+        <section>
           <h2>Code Injection</h2>
           <ul>
             <li>We define it very broadly as: inserting new code into another system.</li>
@@ -76,18 +80,49 @@
             <li>Binary code injection is impossible.</li>
           </ul>
           <img src='res/harvard_architecture.png' style='width: 80%;'/>
+        </section>
           
-          http://en.wikipedia.org/wiki/Executable_space_protection
-          http://en.wikipedia.org/wiki/NX_bit
+        <section>
+          <h2>Executable Space Protection</h2>
+          <ul>
+            <li>Marking memory regions as non-executable in order to protect against errors and attacks.</li>
+            <li>The Burroughs 5000 machine in 1961 was the first to have hardware support. It marked every word as either code or data.</li>
+            <li>Current CPUs use the NX bit.
+              <ul>
+                <li>A bit associaded with a page in the page table specifying if the page can be executed from.</li>
+              </ul>
+            </li>
+          </ul>
         </section>
           
         <section>
           <h2>Positive uses</h2>
           <p>The methods by which exploits are caried out often had or have valid uses. Some examples would be:</p>
           <ul>
-            <li>aspect-oriented programming</li>
             <li>eval</li>
             <li>debugging live code</li>
+            <li>aspect-oriented programming</li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>eval</h2>
+          <ul>
+            <li>Many languages allow the on-the-fly compilation / interpretation / execution of code from a string.</li>
+            <li>Somewhat related is the read–eval–print loop (REPL).</li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>Debugging live code</h2>
+          <ul>
+            <li>Such tools need to be able to inspect, control and modify any code.</li>
+            <li>Examples:
+              <ul>
+                <li>the <code>ptrace</code> system call in Unixes</li>
+                <li>attaching a debugger to a nodejs process by sending the <code>USR1</code> signal.</li>
+              </ul>
+            </li>
           </ul>
         </section>
           
@@ -111,27 +146,6 @@ before() : all() {
     mcall.calls++;
     mcall.startCall = System.nanoTime();
 }</code></pre>
-        </section>
-          
-        <section>
-          <h2>eval</h2>
-          <ul>
-            <li>Many languages allow the on-the-fly compilation / interpretation / execution of code from a string.</li>
-            <li>Somewhat related is the read–eval–print loop (REPL).</li>
-          </ul>
-        </section>
-          
-        <section>
-          <h2>Debugging live code</h2>
-          <ul>
-            <li>Such tools need to be able to inspect, control and modify any code.</li>
-            <li>Examples:
-              <ul>
-                <li>the <code>ptrace</code> system call in Unixes</li>
-                <li>attaching a debugger to a nodejs process by sending the <code>USR1</code> signal.</li>
-              </ul>
-            </li>
-          </ul>
         </section>
           
         <section>
@@ -245,15 +259,17 @@ before() : all() {
         </section>
           
         <section>
+          <h2>ptrace</h2>
+          
           <ul>
-            <li><code>ptrace</code> is a Unix system call that first appeared in V7 (1979).</li>
-            <li>It is used primarily for debugging. A process can gain complete control over another. This includes:
+            <li>A Unix system call that first appeared in V7 (1979).</li>
+            <li>Used to gain complete control over another, usually for debugging. This includes:
               <ul>
                 <li>stopping and restarting the process</li>
                 <li>reading and writing all the registers</li>
                 <li>reading and writing to all available memory (regardless of permission flags)</li>
                 <li>intercepting and changing system calls</li>
-                <li>etc.</li>
+                <li>single-step through code, etc</li>
               </ul>
             </li>
             <li>Listing the memory mapped regions:
@@ -272,6 +288,278 @@ before() : all() {
             <li>Mac OS X adds an option to disable tracing certain processes in order to protect its DRM schemes.</li>
           </ul>          
         </section>
+          
+        <section>
+          <h2>Example Injection</h2>
+          
+          <ul>
+            <li>The source code is at<br/><a href="https://github.com/paul-nechifor/ss/tree/master/02/code/ptrace">github.com/paul-nechifor/ss/tree/master/02/code/ptrace</a></li>
+            <li>The host program is written in assembly based
+              on <a href="http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html">A Whirlwind Tutorial</a>
+              in order to create a very small ELF executable for easy analysis.</li>
+            <li>It's executable memory starts at 0x08048000 (binary file
+              program origin) and is 0x1000 bytes long.</li>
+            <li>The assembled file is <strong>186 bytes</strong> long so there's plenty of room
+              (no need to allocate more memory).</li>
+            <li>It just prints “Ping...” followed by “ pong.” with 1 second pauses.</li>
+          </ul>
+        </section>
+          
+        <section>
+          <h3>host.asm</h3>
+
+          <ul><li>
+            Assembled with <pre class="inline"><code class="bash">nasm -f bin -o host host.asm</code></pre>.
+          </li></ul>
+          <pre><code class='asm'>BITS 32
+  
+                org     0x08048000
+  
+ehdr:                                                   ; Elf32_Ehdr
+                db      0x7F, &quot;ELF&quot;, 1, 1, 1, 0         ;   e_ident
+        times 8 db      0
+                dw      2                               ;   e_type
+                dw      3                               ;   e_machine
+                dd      1                               ;   e_version
+                dd      _start                          ;   e_entry
+                dd      phdr - $$                       ;   e_phoff
+                dd      0                               ;   e_shoff
+                dd      0                               ;   e_flags
+                dw      ehdrsize                        ;   e_ehsize
+                dw      phdrsize                        ;   e_phentsize
+                dw      1                               ;   e_phnum
+                dw      0                               ;   e_shentsize
+                dw      0                               ;   e_shnum
+                dw      0                               ;   e_shstrndx
+  
+ehdrsize equ $ - ehdr
+  
+phdr:                                                   ; Elf32_Phdr
+                dd      1                               ;   p_type
+                dd      0                               ;   p_offset
+                dd      $$                              ;   p_vaddr
+                dd      $$                              ;   p_paddr
+                dd      filesize                        ;   p_filesz
+                dd      filesize                        ;   p_memsz
+                dd      5                               ;   p_flags
+                dd      0x1000                          ;   p_align
+  
+phdrsize      equ     $ - phdr
+
+; Constants --------------------------------------------------------------------
+
+sys_exit                equ     1
+sys_write               equ     4
+sys_nanosleep           equ     162
+
+exit_success            equ     0
+stdout                  equ     1
+
+; Structures -------------------------------------------------------------------
+
+struc   timespec
+    sec:     resd    1
+    nsec:    resd    1
+endstruc
+
+; Data -------------------------------------------------------------------------
+
+ping:
+    db &#39;Ping...&#39;
+ping_end:
+
+pong:
+    db &#39; pong.&#39;, 10
+pong_end:
+
+sleep_delay:
+    istruc timespec
+        at sec, dd 1
+        at nsec, dd 0
+    iend
+
+
+; Main -------------------------------------------------------------------------
+
+_start:
+
+write_again:
+    ; Write ping.
+    mov eax, sys_write
+    mov ebx, stdout
+    mov ecx, ping
+    mov edx, ping_end-ping
+    int 0x80
+    
+    ; Sleep for a while.
+    mov eax, sys_nanosleep
+    mov ebx, sleep_delay
+    mov ecx, 0                  ; Abandon remaining time on interrupts.
+    int 0x80
+    
+    ; Write pong.
+    mov eax, sys_write
+    mov ebx, stdout
+    mov ecx, pong
+    mov edx, pong_end-pong
+    int 0x80
+    
+    ; Sleep for a while.
+    mov eax, sys_nanosleep
+    mov ebx, sleep_delay
+    mov ecx, 0                  ; Abandon remaining time on interrupts.
+    int 0x80
+    
+    jmp write_again
+
+filesize      equ     $ - $$</code></pre>
+
+          
+          
+
+          <ul><li>
+            Very simple memory mapping (<pre class="inline"><code class="bash">cat /proc/`pgrep host`/maps</code></pre>):
+          </li></ul>
+<pre><code style="font-size: 0.8em">08048000-08049000 r-xp 00000000 08:05 852736  /home/p/fac/ss/ongit/02/code/ptrace/host
+f776b000-f776c000 r-xp 00000000 00:00 0       [vdso]
+ffcef000-ffd10000 rwxp 00000000 00:00 0       [stack]</code></pre>
+
+        </section>
+        
+        <section>
+          <h3>inject.c</h3>
+
+          <ul><li>
+            These are just snippets of the code.
+          </li></ul>
+          <pre><code class='c'>// The first argument is the PID of the process to control.
+pid_t pid = atoi(argv[1]);
+// The second argument is the point of injection in that process.
+int inject_point = strtol(argv[2], NULL, 16);
+// Attach to the process (it stops).
+ptrace(PTRACE_ATTACH, pid, NULL, NULL);
+// Wait for process to stop.
+waitpid(pid, NULL, WUNTRACED);
+// Change it somehow.
+trace_proc(...);
+// Detach so that the process can continue.
+ptrace(PTRACE_DETACH, pid, NULL, NULL);</code></pre>
+        </section>
+        
+        <section>
+          <h3>inject.c</h3>
+          
+          <pre><code class='c'>// Read the injection from STDIN.
+read_stdin_to_buf(buf, sizeof(buf), &amp;total);
+// Place it at the injection point.
+put_data(pid, inject_point, buf, total);
+// Get the registers.
+ptrace(PTRACE_GETREGS, pid, NULL, &amp;regs);
+// Clean up some registers.
+regs.eax = regs.ebx = regs.ecx = regs.edx = 0;
+// Change the instruction pointer to the injection entry point.
+regs.eip = inject_point;
+// Set the new register values.
+ptrace(PTRACE_SETREGS, pid, NULL, &amp;regs);</code></pre>
+        </section>
+          
+        <section>
+          <h2>First Injection</h2>
+          
+          <ul>
+            <li>Prints “BOOM!!! ” with 1 second pauses.</li>
+            <li>Doesn't contain ELF headers, just the instructions and data.</li>
+            <li>Entry point is at 0 offset (instructions are first) so that the same value can be reused</li>
+            <li>Starts at 0x08048200 (+0x200 offset).</li>
+            <li>The assembled file is <strong>57 bytes</strong>.</li>
+          </ul>
+        </section>
+          
+        <section>
+          <h3>injection.asm</h3>
+
+          <ul><li>
+            Assembled with <pre class="inline"><code class="bash">nasm -f bin -o injection injection.asm</code></pre>.
+          </li></ul>
+          <pre><code class='asm'>BITS 32
+  
+org     0x08048200
+
+write_again:
+    ; Write boom.
+    mov eax, sys_write
+    mov ebx, stdout
+    mov ecx, boom
+    mov edx, boom_end-boom
+    int 0x80
+    
+    ; Sleep for a while.
+    mov eax, sys_nanosleep
+    mov ebx, sleep_delay
+    mov ecx, 0                  ; Abandon remaining time on interrupts.
+    int 0x80
+    
+    jmp write_again
+
+; Constants --------------------------------------------------------------------
+
+sys_exit                equ     1
+sys_write               equ     4
+sys_nanosleep           equ     162
+
+exit_success            equ     0
+stdout                  equ     1
+
+; Structures -------------------------------------------------------------------
+
+struc   timespec
+    sec:     resd    1
+    nsec:    resd    1
+endstruc
+
+; Data -------------------------------------------------------------------------
+
+boom:
+    db &#39;BOOM!!! &#39;
+boom_end:
+
+sleep_delay:
+    istruc timespec
+        at sec, dd 1
+        at nsec, dd 0
+    iend</code></pre>
+        </section>
+        
+          
+        <section>
+          <h3>Example output</h3>
+
+          <p>Terminal 1</p>
+          <pre><code class='java'>[p@morker]$ ./host
+Ping... pong.
+Ping... pong.
+Ping... pong.
+Ping...BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!!
+BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!!
+BOOM!!! BOOM!!! BOOM!!! BOOM!!! BOOM!!!</code></pre>
+          <p>Terminal 2</p>
+          <pre><code class='java'>[p@morker]$ ./inject `pgrep host` 08048200 < injection</code></pre>
+        </section>
+          
+        <section>
+          <h2>Second Injection: Shellcode</h2>
+          
+          <p>The binary has 30 bytes and it can easily be improved.</p>
+          <pre><code class='asm'>BITS 32
+org     0x08048200
+    mov eax, 11 ; execve
+    mov ebx, binsh
+    mov ecx, 0
+    mov edx, 0
+    int 0x80
+binsh:
+    db '/bin/sh', 0</code></pre>
+        </section>
         
         <section>
           <h2>Case study: Flame</h2>
@@ -289,29 +577,28 @@ before() : all() {
         </section>
         
         <section>
-          <section>
-            <h3>Startup</h3>
-            <ul>
-              <li>The main module is <code>mssecmgr.ocx</code> and it executes
-                at startup by different methods with <code>DDEnumCallback</code> as
-                the entry point. Example:
-                <pre><code class='bash'>rundll32.exe c:\windows\system32\mssecmgr.ocx,DDEnumCallback</code></pre>
-              </li>
+          <h3>Startup</h3>
+          <ul>
+            <li>The main module is <code>mssecmgr.ocx</code> and it executes
+              at startup by different methods with <code>DDEnumCallback</code> as
+              the entry point. Example:
+              <pre><code class='bash'>rundll32.exe c:\windows\system32\mssecmgr.ocx,DDEnumCallback</code></pre>
+            </li>
 
-              <li>Flame doesn't use normal driver and library functions to load
-                code (such as <code>ZwCreateSection()</code> and <code>LoadLibrary()</code>).</li>
-              <li>It allocates memory, marks it with READ, WRITE, EXECUTE flags and writes code to it (uses <code>VirtualAllocEx()</code> and <code>WriteProcessMemory()</code>).</li>
+            <li>Flame doesn't use normal driver and library functions to load
+              code (such as <code>ZwCreateSection()</code> and <code>LoadLibrary()</code>).</li>
+            <li>It allocates memory, marks it with READ, WRITE, EXECUTE flags and writes code to it (uses <code>VirtualAllocEx()</code> and <code>WriteProcessMemory()</code>).</li>
 
-            </ul>
-          </section>
-        
-          <section>
-            <h3>Example injection listing</h3>
-            <p><code>winlogon.exe</code> with injected code working with
-              <code>ccalc32.sys</code><br/>(<code>procmon</code> output from
-              the <a href='http://www.crysys.hu/skywiper/skywiper.pdf'>CrySyS Lab report</a>)</p>
-            
-            <pre><code style='font-size: 0.8em;'>0 fltmgr.sys fltmgr.sys + 0x1888 0xf83f0888 C:\WINDOWS\System32\Drivers\fltmgr.sys 
+          </ul>
+        </section>
+
+        <section>
+          <h3>Example injection listing</h3>
+          <p><code>winlogon.exe</code> with injected code working with
+            <code>ccalc32.sys</code><br/>(<code>procmon</code> output from
+            the <a href='http://www.crysys.hu/skywiper/skywiper.pdf'>CrySyS Lab report</a>)</p>
+
+          <pre><code style='font-size: 0.8em;'>0 fltmgr.sys fltmgr.sys + 0x1888 0xf83f0888 C:\WINDOWS\System32\Drivers\fltmgr.sys 
 1 fltmgr.sys fltmgr.sys + 0x31a7 0xf83f21a7 C:\WINDOWS\System32\Drivers\fltmgr.sys 
 2 fltmgr.sys fltmgr.sys + 0xfc7a 0xf83fec7a C:\WINDOWS\System32\Drivers\fltmgr.sys 
 3 ntkrnlpa.exe ntkrnlpa.exe + 0xac124 0x80583124 C:\WINDOWS\system32\ntkrnlpa.exe 
@@ -323,7 +610,6 @@ before() : all() {
 9 &lt;unknown&gt; 0x1f1ed9c 0x1f1ed9c 
 10 &lt;unknown&gt; 0x1f1128b 0x1f1128b 
 11 &lt;unknown&gt; 0x1f1c900 0x1f1c900</code></pre>
-          </section>
         </section>
         
         <section>
@@ -428,19 +714,20 @@ repl</code></pre>
         
         <section data-state="shaderunload">
           <h2>Sources</h2>
-          <ul>
+          <ul style="font-size: 0.8em; line-height:1em;">
             <li><a href="http://en.wikipedia.org/wiki/Code_injection">en.wikipedia.org/wiki/Code_injection</a></li>
             <li><a href="http://en.wikipedia.org/wiki/Portable_Executable_Automatic_Protection">en.wikipedia.org/wiki/Portable_Executable_Automatic_Protection</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/Ptrace">en.wikipedia.org/wiki/Ptrace</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/Executable_space_protection">en.wikipedia.org/wiki/Executable_space_protection</a></li>
+            <li><a href="http://en.wikipedia.org/wiki/NX_bit">en.wikipedia.org/wiki/NX_bit</a></li>
             <li><a href="http://home.inf.fh-rhein-sieg.de/~ikarim2s/how2injectcode/code_inject.html">home.inf.fh-rhein-sieg.de/~ikarim2s/how2injectcode/code_inject.html</a></li>
             <li><a href="http://www.cert.pl/news/5874/langswitch_lang/en">www.cert.pl/news/5874/langswitch_lang/en</a></li>
             <li><a href="http://www.crysys.hu/skywiper/skywiper.pdf">www.crysys.hu/skywiper/skywiper.pdf</a></li>
             <li><a href="http://www.linuxjournal.com/article/6210">www.linuxjournal.com/article/6210</a></li>
-            <li><a href="http://en.wikipedia.org/wiki/Ptrace">en.wikipedia.org/wiki/Ptrace</a></li>
-            
-            
           </ul>
+          
           <h3>Resources</h3>
-          <ul>
+          <ul style="font-size: 0.8em; line-height:1em;">
             <li><a href="http://liawww.epfl.ch/index.php/component/jresearch/?view=member&task=show&id=14">liawww.epfl.ch/index.php/component/jresearch/?view=member&task=show&id=14</a></li>
             <li><a href="http://www.crossfire.nu/news/5254/the-crossfire-intel-challenge-malaysian-edition">www.crossfire.nu/news/5254/the-crossfire-intel-challenge-malaysian-edition</a></li>
             <li><a href="http://www.crossfire.nu/news/5254/the-crossfire-intel-challenge-malaysian-edition">www.crossfire.nu/news/5254/the-crossfire-intel-challenge-malaysian-edition</a></li>
