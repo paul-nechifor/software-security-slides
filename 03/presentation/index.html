@@ -55,12 +55,11 @@
                 <li>MySQL weak password</li>
                 <li>VRFY & EXPN in Postfix</li>
                 <li>PHP-CGI vulnerability</li>
-                <li>ProFTPD arbitrary command execution</li>
+                <li>ProFTPD Cross-site Request Forgery</li>
               </ol>
             </li>
             <li>Comparisons</li>
           </ul>
-          <p>Not spell checked.</p>
         </section>
           
         <section>
@@ -633,7 +632,6 @@ $ </code></pre>
           <img src='res/postfix5.png' style='width: 100%;'/>
           <p>Metasploitable: adding user <code>paul.nechifor</code> in the meantime.</p>
           <img src='res/postfix6.png' style='width: 100%;'/>
-          <p>Metasploitable: adding user <code>paul.nechifor</code> in the meantime.</p>
         </section>
         
         <section>
@@ -730,6 +728,7 @@ command not understood.
         
         <section>
           <h3>Solution</h3>
+          <p>Using a byte to inform about overflow.</p>
           <p>The vulnerable parts of ProFTPD have been patched and are available in the newest versions.</p>
         </section>
         
