@@ -174,3 +174,22 @@ body {
   padding: 0;
   vertical-align: 0;
 }
+
+.reveal table {
+  margin: 10px auto;
+  background: #EEE;
+}
+
+.reveal table th {
+  font-weight: bold;
+}
+
+.reveal table th, .reveal table td {
+  padding: 1px 10px;
+}
+
+.reveal blockquote {
+  width: 85%;
+  background: #EEE;
+  box-shadow: none;
+}

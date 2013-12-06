@@ -46,14 +46,674 @@
           
         <section>
           <h2>Agenda</h2>
-          <ol>
-            <li>Overview</li>
-          </ol>
+          <ul>
+            <li>History</li>
+            <li>OpenVAS Architecture</li>
+            <li>OpenVAS Usage</li>
+            <li>Case Studies
+              <ol>
+                <li>MySQL weak password</li>
+                <li>VRFY & EXPN in Postfix</li>
+              </ol>
+            </li>
+            <li>Comparisons</li>
+          </ul>
         </section>
           
+        <section>
+          <h2>Vulnerability Scanners</h2>
+          <ul>
+            <li>Tools for finding weaknesses in programs, systems, and networks.</li>
+            <li>Scan types:
+              <ul>
+                <li>Ports</li>
+                <li>Web applications</li>
+                <li>Database security</li>
+                <li>Computer networks, etc.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>COPS</h2>
+          <ul>
+            <li>Short for <em>Computer Oracle and Password System</em>.</li>
+            <li>A suite of 12 tools for security auditing<br/>Unix systems created in 1989 by Dan Farmer.</li>
+            <li>The first to achieve widespread use.<br/><br/></li>
+            <li>Scanns for:          
+              <ul>
+                <li>poor passwords;</li>
+                <li>writability of users home directories and startup files;</li>
+                <li>anonymous ftp setup;</li>
+                <li>tampering of important binaries;</li>
+                <li>and others.</li>                
+              </ul>
+            </li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>SATAN</h2>
+          <ul>
+            <li>Short for <em>Security Administrator Tool for Analyzing Networks</em>.</li>
+            <li>Created by Dan Farmer and Wieste Venema and released in 1995.</li>
+            <li>Controversy and hysteria:
+              <ul>
+                <li><blockquote>[F]iguring out how to break into a multitude of Internet 
+    sites is literally as easy pulling up a dialog box in the program,
+    and filling in two fields. &mdash;&nbsp;PC&nbsp;Magazine</blockquote></li>
+                <li><blockquote>SATAN is like a gun, and this is like handing a gun to a
+    12-year-old. &mdash; LA Times</blockquote></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+          
+        <section>
+          <h2>OpenVAS</h2>
+          <ul>
+            <li>Short for <em>Open Vulnerability Assessment System</em>.</li>
+            <li>A framework of services and tools for finding and managing vulnerabilities.</li>
+            <li>Runs on Linux, but scans multiple platforms.</li>
+            <li>Open source. Forked from Nessus in 2005 after it became closed.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>Architecture</h3>
+          <img src='res/arch.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>OpenVAS Scanner</h3>
+          <ul>
+            <li>The core technology which connects to the targets and executes the tests called <em>Network Vulnerability Tests</em> or NVTs.</li>
+            <li>Available as a HTTPS service on port 9391.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>OpenVAS Manager</h3>
+          <ul>
+            <li>Acts as an intermediary between the scanner and clients.</li>
+            <li>Implements most of the logic of scanning and reading the configs so that consistent clients can be easily implemented on top.</li>
+            <li>OpenVAS Transfer Protocol: Manager to Scanner communication.</li>
+            <li>OpenVAS Management Protocol: Client to Manager communication.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>OpenVAS Administrator</h3>
+          <ul>
+            <li>Manages users and NVT feeds.</li>
+            <li>Feeds:
+              <ul>
+                <li>OpenVAS NVT Feed: free, updated daily, &gt;30.000 NVTs.</li>
+                <li>Greenbone Security Feed: commercial.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>Greenbone Security Desktop</h3>
+          <ul>
+            <li>Qt-based client which runs on Linux. (Previously: Windows, too.)</li>
+          </ul>
+          <img src='res/gsd.png' style='width: 78%;'/>
+        </section>
+        
+        <section>
+          <h3>OpenVAS CLI</h3>
+          <ul>
+            <li>The command line interface client.</li>
+            <li>Used best for batch processes and scripts.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>Greenbone Security Assistant</h3>
+          <img src='res/gsa.png' style='width: 85%;'/>
+        </section>
+        
+        <section>
+          <h3>Greenbone Security Assistant</h3>
+          <ul>
+            <li>Web server normally bound to 127.1 (loopback, so no external access).</li>
+            <li>Can be made accessible to other locations.</li>
+            <li>Runs on any platform with a browser.</li>
+            <li>GSA works the the Manager and also with the Administrator.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>NASL</h3>
+          <ul>
+            <li>Stands for <em>Nessus Attack Scripting Language</em>.</li>
+            <li>C-like language left over from Nessus and is optimized for writing NVT (as opposed to a general scripting language).</li>
+            <li>Includes simple library functions for sockets, networks, HTTP, FTP, crypto, and others.</li>
+            <li>Source code usually found in <code>/var/lib/openvas/plugins</code>.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h1>Usage</h1>
+        </section>
+        
+        <section>
+          <h3>Kali Linux</h3>
+          <ul>
+            <li>What we used for hosting OpenVAS.</li>
+            <li>Kali Linux is a Debian-based distribution created for penetration testing.</li>
+            <li>Comes preinstalled with numerous tools: OpenVAS, Metasploit, Wireshark, nmap, John the Ripper, etc.</li>
+          </ul>
+          <img src='res/kali.png' style='width: 60%;'/>
+        </section>
+        
+        <section>
+          <h3>Metasploitable</h3>
+          <ul>
+            <li>What we will be scanning.</li>
+            <li>An intentionally vulnerable Linux virtual machine.</li>
+            <li>(Like the discontinued Damn Vulnerable Linux.)</li>
+            <li>Misconfigured, old, and with known vulnerabilities: databases, web services, FTP, SHH, and many others.</li>
+          </ul>
+          <img src='res/metasploitable.png' style='width: 60%;'/>
+        </section>
+        
+        <section>
+          <h3>Preparing OpenVAS</h3>
+          <p>Downloading the latest NVTs:</p>
+          <pre><code class='bash'># openvas-nvt-sync</code></pre>
+          <p>or from the GSA</p>
+          <img src='res/sync.png' style='width: 50%;'/>
+        </section>
+        
+        <section>
+          <h3>Creating a Task</h3>
+          <p>Choosing the deepest scan config and the Metasploitable VM as the target (with address 192.168.1.102).</p>
+          <img src='res/step1.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Viewing Tasks</h3>
+          <p>Viewing all the tasks. The previous one was started.</p>
+          <img src='res/step2.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Task Details</h3>
+          <p>Showing the status and the intermediary report.</p>
+          <img src='res/step3.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Task Done</h3>
+          <p></p>
+          <ul>
+            <li>Deepest task was completed after ~1 hour on my VM.</li>
+            <li>Scan results for two configurations, same target:
+              <table>
+                <tr>
+                  <th>Config</th>
+                  <th>High</th>
+                  <th>Medium</th>
+                  <th>Low</th>
+                  <th>Log</th>
+                </tr>
+                <tr>
+                  <td>Full and fast</td>
+                  <td>41</td>
+                  <td>21</td>
+                  <td>15</td>
+                  <td>75</td>
+                </tr>
+                <tr>
+                  <td>Full and very deep ultimate</td>
+                  <td>45</td>
+                  <td>25</td>
+                  <td>16</td>
+                  <td>76</td>
+                </tr>
+              </table>
+            </li>
+            <li>Reports are downloadable in multiple formats: HTML, LaTeX, <span class='strike'>PDF</span>, TXT, XML, and other.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <p>Overview of threat level per port.</p>
+          <img src='res/port-overview.png' style='width: 50%;'/>
+        </section>
+        
+        <section>
+          <p>Detailed summaries with solutions and references.</p>
+          <img src='res/detailed.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <p>Solutions usually sugest upgrading the application, but not always.</p>
+          <img src='res/solution.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h2>1. MySQL weak password</h2>
+          <img src='res/mysqlpass.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Trying login from Kali Linux: Works</h3>
+          <img src='res/mysqlpass2.png' style='width: 100%;'/>
+          <p>(Note: IP is different because I had to restart the VM.)</p>
+        </section>
+        
+        <section>
+          <h3>The NVT</h3>
+          <p>Hunting down the NVT:</p>
+          <pre><code class='bash'>grep -r 'empty password' /var/lib/openvas/plugins | grep mysql</code></pre>
+          <p>Full source code:</p>
+          <pre><code>###############################################################################
+# OpenVAS Vulnerability Test
+# $Id: gb_mysql_weak_passwords.nasl 12 2013-10-27 11:15:33Z jan $
+#
+# MySQL weak password 
+#
+# Authors:
+# Michael Meyer &lt;michael.meyer@greenbone.net&gt;
+#
+# Copyright:
+# Copyright (c) 2012 Greenbone Networks GmbH
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2
+# (or any later version), as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+###############################################################################
+
+include(&quot;revisions-lib.inc&quot;);
+tag_summary = &quot;It was possible to login into the remote MySQL as root using weak credentials.&quot;;
+
+tag_solution = &quot;Change the password as soon as possible.&quot;;
+
+SCRIPT_OID  = &quot;1.3.6.1.4.1.25623.1.0.103551&quot;;
+CPE = &quot;cpe:/a:mysql:mysql&quot;;
+
+# need desc here to modify it later in script.
+desc = &quot;
+ Summary:
+ &quot; + tag_summary + &quot;
+ Solution:
+ &quot; + tag_solution;
+if (description)
+{
+
+ script_tag(name:&quot;cvss_base&quot;, value:&quot;9.0&quot;);
+ script_tag(name:&quot;cvss_base_vector&quot;, value:&quot;AV:N/AC:L/Au:N/C:C/I:P/A:P&quot;);
+ script_tag(name:&quot;risk_factor&quot;, value:&quot;Critical&quot;);
+ script_oid(SCRIPT_OID);
+ script_version(&quot;$Revision: 12 $&quot;);
+ script_tag(name:&quot;last_modification&quot;, value:&quot;$Date: 2013-10-27 12:15:33 +0100 (Sun, 27 Oct 2013) $&quot;);
+ script_tag(name:&quot;creation_date&quot;, value:&quot;2012-08-23 10:38:09 +0200 (Thu, 23 Aug 2012)&quot;);
+ script_name(&quot;MySQL weak password&quot;);
+ script_description(desc);
+ script_summary(&quot;Checks if login with default credentials is possible&quot;);
+ script_category(ACT_ATTACK);
+ script_family(&quot;Default Accounts&quot;);
+ script_copyright(&quot;This script is Copyright (C) 2012 Greenbone Networks GmbH&quot;);
+ script_dependencies(&quot;mysql_version.nasl&quot;);
+ script_require_ports(&quot;Services/mysql&quot;, 3306);
+ script_require_keys(&quot;MySQL/installed&quot;);
+
+ if (revcomp(a: OPENVAS_VERSION, b: &quot;6.0+beta5&quot;) &gt;= 0) {
+   script_tag(name : &quot;solution&quot; , value : tag_solution);
+   script_tag(name : &quot;summary&quot; , value : tag_summary);
+ }
+ exit(0);
+}
+
+include(&quot;byte_func.inc&quot;);
+include(&quot;host_details.inc&quot;);
+
+set_byte_order(BYTE_ORDER_LITTLE_ENDIAN);
+
+port = get_app_port(cpe:CPE, nvt:SCRIPT_OID);
+if(!port) {
+    port = 3306;
+}
+
+if(!get_port_state(port))exit(0);
+if(get_kb_item(&quot;MySQL/blocked&quot;))exit(0);
+
+username = &quot;root&quot;;
+passwords = make_list(&quot;admin&quot;,&quot;root&quot;,&quot;mysql&quot;,&quot;password&quot;,&quot;passw0rd&quot;,&quot;123456&quot;,&quot;12345678&quot;,&quot;mysqladmin&quot;,&quot;qwerty&quot;,&quot;letmein&quot;,&quot;database&quot;,&quot;&quot;);
+
+foreach password (passwords) {
+
+  ver = &quot;&quot;;
+  pass = &quot;&quot;;
+  req = &quot;&quot;;
+  native = FALSE;
+
+  sock = open_sock_tcp(port);
+  if(!sock)exit(0);
+
+  res =  recv(socket:sock, length:4);
+  if(!res) {
+    close(sock);
+    exit(0);
+  }  
+
+  plen = ord(res[0]) + (ord(res[1])/8) + (ord(res[2])/16);
+  res =  recv(socket:sock, length:plen);
+
+  if(&quot;mysql_native_password&quot; &gt;&lt; res)native = TRUE;
+
+  for (i=0; i&lt;strlen(res); i++)  {
+    if (ord(res[i]) != 0) {
+      ver += res[i];
+    }
+      else {
+      break;
+    }
+  }
+
+  p = strlen(ver);
+  if(p &lt; 5) {
+    close(sock);
+    exit(0);
+  }  
+
+  caps = substr(res, 14+p, 15+p);
+  if(!caps)continue;
+
+  caps = ord(caps[0]) | ord(caps[1]) &lt;&lt; 8;
+  proto_is_41 = (caps &amp; 512);
+  if(!proto_is_41) {
+    close(sock);
+    exit(0);
+  }  
+
+  salt = substr(res, 5+p, 12+p);
+  
+  if(strlen(res) &gt; (44+p)) {
+    salt += substr(res, 32+p, 43+p);
+  }  
+
+  sha_pass1 = SHA1(password);
+  sha_pass2 = SHA1(sha_pass1);
+  sha_pass3 = SHA1(salt + sha_pass2);
+
+  l = strlen(sha_pass3);
+
+  for (i=0; i&lt;l; i++) {
+    pass += raw_string(ord(sha_pass1[i]) ^ ord(sha_pass3[i]));
+  }  
+
+  req = raw_string(0x05,0xa6,0x0f,0x00,0x00,0x00,0x00,0x01,0x21,0x00,0x00,0x00,0x00,0x00,
+                   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+                   0x00,0x00,0x00,0x00);
+
+  req += raw_string(username,0x00);
+  
+  if(strlen(password) &gt;0) {
+    req += raw_string(0x14,pass);
+  } else {
+    req += raw_string(0x00);
+  }  
+
+  if(native) req += raw_string(0x6d,0x79,0x73,0x71,0x6c,0x5f,0x6e,0x61,0x74,0x69,0x76,0x65,0x5f,0x70,0x61,0x73,0x73,0x77,0x6f,0x72,0x64,0x00);
+
+  len = strlen(req);
+  req = raw_string(len &amp; 0xff, (len &gt;&gt; 8) &amp; 0xff, (len &gt;&gt; 16) &amp; 0xff, 0x01) + req;
+
+  send(socket:sock,data:req);
+  res =  recv(socket:sock, length:4);
+
+  if(!res || strlen(res) &lt; 4) {
+    close(sock);
+    continue;
+  }
+
+  plen = ord(res[0]) + (ord(res[1])/8) + (ord(res[2])/16);
+
+  res =  recv(socket:sock, length:plen);
+  if(!res || strlen(res) &lt; plen) {
+    close(sock);
+    continue;
+  }
+
+  errno = ord(res[2]) &lt;&lt; 8 | ord(res[1]);
+
+  if(errno &gt; 0 || errno == &quot;&quot;) {
+    close(sock);
+    continue;
+  }
+
+  cmd = 'show databases';
+  len = strlen(cmd) + 1;
+  req = raw_string(len &amp; 0xff, (len &gt;&gt; 8) &amp; 0xff, (len &gt;&gt; 16) &amp; 0xff, 0x00, 0x03, cmd);
+
+  send(socket:sock,data:req);
+
+  z = 0;
+  while(1) {
+
+    z++;
+    if(z &gt; 15)exit(0);
+    res =  recv(socket:sock, length:4);
+
+    if(!res || strlen(res) &lt; 4) {
+      close(sock);
+      exit(0);
+    }
+
+    plen = ord(res[0]) + (ord(res[1])/8) + (ord(res[2])/16);
+
+    res =  recv(socket:sock, length:plen);
+    if(!res || strlen(res) &lt; plen)break;
+
+    if(&quot;information_schema&quot; &gt;&lt; res) {
+      close(sock);
+
+      data = desc + 'nnIt was possible to login as root';
+
+      if(strlen(password) &gt; 0) {
+        data += ' with password &quot;' + password + '&quot;.';
+      } else {
+        data += ' with an empty password.';
+      }
+
+      data += 'nn';
+
+      security_hole(port:port,data:data);
+      exit(0);
+    }  
+
+  }
+
+  close(sock);  
+}
+
+close(sock);</code></pre>
+        </section>
+        
+        <section>
+          <ul>
+            <li>Trys to see if the specified or standard port is open.</li>
+            <li>Loops through a small list of common passwords and opens a connection on each one.</li>
+          </ul>
+          <pre><code>port = get_app_port(cpe:CPE, nvt:SCRIPT_OID);
+if(!port) { port = 3306; }
+if(!get_port_state(port)) exit(0);
+if(get_kb_item(&quot;MySQL/blocked&quot;)) exit(0);
+username = &quot;root&quot;;
+passwords = make_list(&quot;admin&quot;,&quot;root&quot;,&quot;mysql&quot;,&quot;password&quot;,&quot;passw0rd&quot;,&quot;123456&quot;,&quot;12345678&quot;,&quot;mysqladmin&quot;,&quot;qwerty&quot;,&quot;letmein&quot;,&quot;database&quot;,&quot;&quot;);
+foreach password (passwords) {
+  ...
+  sock = open_sock_tcp(port);
+  if(!sock)exit(0);
+  res =  recv(socket:sock, length:4);
+  ...
+}  
+</code></pre>
+        </section>
+        <section>
+          <ul>
+            <li>Runs the whole authentication protocol.</li>
+            <li>Tries to run a command to confirm.</li>
+          </ul>
+          <pre><code>sha_pass1 = SHA1(password);
+sha_pass2 = SHA1(sha_pass1);
+sha_pass3 = SHA1(salt + sha_pass2);
+...
+req = raw_string(len &amp; 0xff, (len &gt;&gt; 8) &amp; 0xff, (len &gt;&gt; 16) &amp; 0xff, 0x01) + req;
+send(socket:sock,data:req);
+res =  recv(socket:sock, length:4);
+...
+cmd = 'show databases';
+len = strlen(cmd) + 1;
+req = raw_string(len &amp; 0xff, (len &gt;&gt; 8) &amp; 0xff, (len &gt;&gt; 16) &amp; 0xff, 0x00, 0x03, cmd);
+send(socket:sock,data:req);
+</code></pre>
+        </section>
+        
+        <section>
+          <h3>Solution</h3>
+          <p>Changing the MySQL password in Metasploitable, as per recomandation:</p>
+          <pre><code>$ mysql -u root -p password [a-better-one-goes-here]
+Enter password:
+$ </code></pre>
+          <p>Trying the same thing again fails:</p>
+          <img src='res/mysqlpass3.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h2>2. VRFY &amp; EXPN in Postfix</h2>
+          <img src='res/postfix0.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>What server is it?</h3>
+          <img src='res/postfix1.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Let's check the vulnerability</h3>
+          <img src='res/postfix2.png' style='width: 100%;'/>
+          <ul>
+            <li>Log in using <code>telnet</code>.</li>
+            <li>Use EHLO (enhanced hello) to see what's supported.</li>
+            <li>There's VRFY! Sending <code>VRFY root</code> returns 252 (not confirming existence, which is 250, but will attempt).</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h3>What about non-existant users?</h3>
+          <p>Kali Linux: checking <code>paul.nechifor</code>.</p>
+          <img src='res/postfix5.png' style='width: 100%;'/>
+          <p>Metasploitable: adding user <code>paul.nechifor</code> in the meantime.</p>
+          <img src='res/postfix6.png' style='width: 100%;'/>
+          <p>Metasploitable: adding user <code>paul.nechifor</code> in the meantime.</p>
+        </section>
+        
+        <section>
+          <h3>Sidetrack: Send an email to root using telnet</h3>
+          <img src='res/postfix3.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Sidetrack: The email was received.</h3>
+          <img src='res/postfix4.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h3>Solution</h3>
+          <p>Edit <code>/etc/postfix/conf.cf</code> to add <code>disable_vrfy_command=yes</code> and then:</p>
+          <pre><code># /etc/init.d/postfix restart</code></pre>
+          <img src='res/postfix7.png' style='width: 100%;'/>
+        </section>
+        
+        <section>
+          <h2>Comparisons</h2>
+          <ul>
+            <li></li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>OpenVAS vs Nessus</h2>
+          <ul>
+            <li>A <a href='http://security.lss.hr/images/stories/documents/Nessus_vs_OpenVAS_en.pdf'>comparisson done by LS&amp;S</a> in 2009 with 15 servers and multiple vulnerabilities.
+              <table>
+                <tr>
+                  <th>Tool</th>
+                  <th>Percentage</th>
+                </tr>
+                <tr>
+                  <td>Nessus</td>
+                  <td>84&nbsp;%</td>
+                </tr>
+                <tr>
+                  <td>OpenVAS</td>
+                  <td>24&nbsp;%</td>
+                </tr>
+              </table>
+            </li>
+            <li>The tests show a clear superiority of Nessus with the overall results.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h2>OpenVAS vs Nessus</h2>
+          <ul>
+            <li>The same test, only counting vulnerabilities discovered in the last two years:
+              <table>
+                <tr>
+                  <th>Tool</th>
+                  <th>Percentage</th>
+                </tr>
+                <tr>
+                  <td>Nessus</td>
+                  <td>36&nbsp;%</td>
+                </tr>
+                <tr>
+                  <td>OpenVAS</td>
+                  <td>72&nbsp;%</td>
+                </tr>
+              </table>
+            </li>
+            <li>The test concludes:
+              <blockquote>Even though Nessus [...] has larger base of plugins and discovers 
+more known vulnerabilities, results [...] showed that OpenVAS scanner 
+discover more recent vulnerabilities. These are pretty good results for OpenVAS 
+considering Nessus have three times more plugins and 10+ years of development 
+behind.</blockquote>
+            </li>
+            <li>Given that OpenVAS is free and Nessus costs $1500 per year, OpenVAS is a good alternative for security auditing.</li>
+          </ul>
+        </section>
+        
+        
         <section data-state="shaderunload">
           <h2>Sources</h2>
           <ul style="font-size: 0.8em; line-height:1em;">
+            <li><a href='ftp://coast.cs.purdue.edu/pub/tools/unix/scanners/cops/'>ftp://coast.cs.purdue.edu/pub/tools/unix/scanners/cops/</a></li>
+            <li><a href='http://www.csee.umbc.edu/~woodcock/cmsc482/proj1/satan.html'>www.csee.umbc.edu/~woodcock/cmsc482/proj1/satan.html</a></li>
+            <li><a href='http://en.wikipedia.org/wiki/OpenVAS'>en.wikipedia.org/wiki/OpenVAS</a></li>
+            <li><a href='http://www.openvas.org/about.html'>www.openvas.org/about.html</a></li>
+            <li><a href='http://www.openvas.org/software.html'>www.openvas.org/software.html</a></li>
+            <li><a href='http://www.openvas.org/compendium/openvas-compendium.html'>www.openvas.org/compendium/openvas-compendium.html</a></li>
+            <li><a href='http://security.lss.hr/images/stories/documents/Nessus_vs_OpenVAS_en.pdf'>security.lss.hr/images/stories/documents/Nessus_vs_OpenVAS_en.pdf</a></li>
+            <li><a href=''></a></li>
           </ul>
           
           <h3>Resources</h3>
