@@ -78,9 +78,9 @@ text-shadow: 1px 1px 0 #000,
           <ul>
             <li>Overview</li>
             <li>Injected PuTTY</li>
+            <li>IE8 Heap Spray</li>
             <li>Web Scan & Java break-in</li>
             <li>Java Sandbox Break-out</li>
-            <li>IE8 Heap Spray</li>
             <li>Conclusions</li>
           </ul>
         </section>
@@ -300,6 +300,18 @@ exploit</code></pre>
         </section>
         
         <section class='bigger'>
+          <h2>DWORD_XOR Encoder (source)</h2>
+<pre class="ruby"><code> Rex::Arch::X86.sub(-(((state.buf.length - 1) / 4) + 1), Rex::Arch::X86::ECX,
+        state.badchars) +
+      "\xe8\xff\xff\xff" + # call $+4
+      "\xff\xc0"         + # inc eax
+      "\x5e"             + # pop esi
+      "\x81\x76\x0eXORK" + # xor [esi + 0xe], xork
+      "\x83\xee\xfc"     + # sub esi, -4
+      "\xe2\xf4"           # loop xor</code></pre>
+        </section>
+        
+        <section class='bigger'>
           <h2>Shikata ga nai</h2>
           <ul>
             <li>A Japanese expression meaning “it cannot be helped”.</li>
@@ -440,7 +452,7 @@ exploit</code></pre>
           <h2>Video demo</h2>
         </section>
         
-        <section class='bigger'>
+        <section class='bigger' data-state="shaderunload">
           <h2>Details</h2>
           <ul>
             <li>Takes advantage of the Java RMI Server default config.</li>
@@ -450,9 +462,6 @@ exploit</code></pre>
             <li>Bytecode Advantage(TM pending): the vulnerability works reliably across 5 different platforms and 3 architectures.</li>
             <li>RMI method calls don't do any authentication.</li>
           </ul>
-        </section>
-        
-        <section data-state="shaderunload">
         </section>
         
         <section class='cover' data-state="shaderload">
@@ -482,22 +491,41 @@ exploit</code></pre>
           </table>
         </section>
         
-        <section>
-          <h2>Prevention</h2>
+        <section class='bigger'>
+          <h2>Conclusions</h2>
+          <ul>
+            <li>Metasploit is the most successful such framework.</li>
+            <li>Considered the de facto exploit development framework.</li>
+          </ul>
+          <h2>Others</h2>
+          <ul>
+            <li>w3af: less general than Metasploit.</li>
+            <li>Core Impact: best competitor, but not free.</li>
+          </ul>
         </section>
         
-        <section>
-          <h2>Conclusions</h2>
+        <section class='bigger'>
+          <h2>Prevention (usual stuff)</h2>
+          <ul>
+            <li>Use up to date software.</li>
+            <li>Security through obscurity:
+              <ul>
+                <li>Configure software to not give its identity and version.</li>
+                <li>Use non-default ports.</li>
+              </ul>
+            </li>
+            <li>Don't pass sensitive date through insecure channels (e.g.: FTP, telnet).</li>
+          </ul>
         </section>
         
         <section data-state="shaderunload">
           <h2>Sources</h2>
 <pre style="font-size:16px">
-http://www.offensive-security.com/metasploit-unleashed/Auxiliary_Module_Reference
+http://www.offensive-security.com/metasploit-unleashed/
 http://en.wikipedia.org/wiki/Metasploit_Project
 http://www.exploit-db.com/wp-content/themes/exploit/docs/18532.pdf
 http://blog.strategiccyber.com/2013/06/28/staged-payloads-what-pen-testers-should-know/
-https://www.rapid7.com/db/modules/exploit/windows/browser/ms12_037_same_id
+http://www.rapid7.com/db/modules/exploit/windows/browser/ms12_037_same_id
 http://www.rapid7.com/db/modules/exploit/multi/misc/java_rmi_server
 http://www.rapid7.com/db/modules/exploit/multi/browser/java_storeimagearray
 http://www.osvdb.org/82865
@@ -508,7 +536,6 @@ https://www.corelan.be/index.php/2011/12/31/exploit-writing-tutorial-part-11-hea
 http://www.levinkv.ru/bezopasnost/metasploit/metasploit-penetration-testing-cookbook-%D1%87%D0%B0%D1%81%D1%82%D1%8C-1.html
 http://www.harmonysecurity.com/files/HS-P005_ReflectiveDllInjection.pdf
 </pre>
-          
         </section>
           
         <section data-state="shaderload" data-background="#000">
