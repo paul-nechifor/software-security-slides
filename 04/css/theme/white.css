@@ -174,3 +174,20 @@ body {
   padding: 0;
   vertical-align: 0;
 }
+
+
+
+.reveal .bigger p, .reveal .bigger li, .reveal .bigger td {
+  font-size: 40px;
+  line-height: 50px;
+}
+
+.reveal .bigger li {
+  margin-bottom: 20px;
+}
+
+
+
+.reveal table {
+  margin: 10px auto;
+}
