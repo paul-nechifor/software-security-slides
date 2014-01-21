@@ -91,7 +91,7 @@ text-shadow: 1px 1px 0 #000,
           <table>
             <tr><td>2003 –</td><td>created by H.D. Moore</td></tr>
             <tr><td>2007 –</td><td>rewritten in Ruby (from Perl)</td></tr>
-            <tr><td>2009 –</td><td>acquired by Rapid7 (still under BSD licence)</td></tr>
+            <tr><td>2009 –</td><td>acquired by Rapid7 (still under BSD license)</td></tr>
           </table>
         </section>
           
@@ -115,7 +115,7 @@ text-shadow: 1px 1px 0 #000,
             <li>Metasploit Framework (command line)</li>
             <li>Metasploit Community (web based)</li>
             <li>Metasploit Express & Pro (commercial web based)</li>
-            <li>Armitage (gui)</li>
+            <li>Armitage (GUI)</li>
           </ul>
         </section>
           
@@ -149,10 +149,10 @@ text-shadow: 1px 1px 0 #000,
         <section class='bigger'>
           <h2>Rex library</h2>
           <ul>
-            <li>Independent classes and modules that provide the features necesarry for the rest of the system like:
+            <li>Independent classes and modules that provide the features necessary for the rest of the system like:
               <ul>
-                <li>generating assembly inscructions programmatically for certain architectures;</li>
-                <li>support for usefull protocols like HTTP, SMB;</li>
+                <li>generating assembly instructions programmatically for certain architectures;</li>
+                <li>support for useful protocols like HTTP, SMB;</li>
                 <li>encoding;</li>
                 <li>Opcode Database interaction, etc.</li>
               </ul>
@@ -160,13 +160,13 @@ text-shadow: 1px 1px 0 #000,
           </ul>
         </section>
         
-        <section class='bigger' data-state="shaderunload">
+        <section class='bigger'>
           <h2>Basics</h2>
           
           <p>vulnerability → exploit → payload</p>
         </section>
         
-        <section class='bigger'>
+        <section class='bigger' data-state="shaderunload">
           <h2>Exploits</h2>
           <ul>
             <li>Active:
@@ -184,7 +184,7 @@ text-shadow: 1px 1px 0 #000,
           </ul>
         </section>
         
-        <section class='cover' data-state="shaderload">
+        <section class='cover' data-state="shaderload" data-background='#000000'>
           <h1>Injected PuTTY</h1>
         </section>
         
@@ -198,7 +198,7 @@ text-shadow: 1px 1px 0 #000,
         </section>
         
         <section class='bigger'>
-          <h2>Video demo</h2>
+          <iframe class="youtube-player" type="text/html" width="800" height="600" src="http://www.youtube.com/embed/tl8vwcQss0c" allowfullscreen frameborder="0"></iframe>
         </section>
         
         <section class='bigger'>
@@ -240,7 +240,7 @@ text-shadow: 1px 1px 0 #000,
             <li>Virustotal is a free service which scans files using multiple anti-viruses.</li>
             <li>Using it, 7 of 48 anti-viruses detect the encoded injected payload.</li>
             <li>But they all say something different!</li>
-            <li>They heuristically detect that something is suspecious, but not the specific threat.</li>
+            <li>They heuristically detect that something is suspicious, but not the specific threat.</li>
           </ul>
         </section>
         
@@ -260,7 +260,7 @@ exploit</code></pre>
         </section>
         
         <section class='bigger'>
-          <h2>Let's analyze more closelly.</h2>
+          <h2>Let's analyze more closely.</h2>
         </section>
         
         <section class='bigger'>
@@ -274,9 +274,9 @@ exploit</code></pre>
         <section class='bigger'>
           <h2>Why encode the payload?</h2>
           <ul>
-            <li>The transmission protocol or the vulnerable aplication may be sensitive to certain data.</li>
-            <li>A payload is usualy encoded to make sure it can pass through and not break.</li>
-            <li>A common bad caracter is a null byte since it limits C strings.</li>
+            <li>The transmission protocol or the vulnerable application may be sensitive to certain data.</li>
+            <li>A payload is usually encoded to make sure it can pass through and not break.</li>
+            <li>A common bad character is a null byte since it limits C strings.</li>
             <li>The stub is usually very small.</li>
           </ul>
         </section>
@@ -316,7 +316,7 @@ exploit</code></pre>
           <ul>
             <li>A Japanese expression meaning “it cannot be helped”.</li>
             <li>A.k.a. Polymorphic XOR Additive Feedback Encoder.</li>
-            <li>The best rated encoder. Highly polimorphic. Difficult to understand.</li>
+            <li>The best rated encoder. Highly polymorphic. Difficult to understand.</li>
           </ul>
         </section>
         
@@ -324,7 +324,7 @@ exploit</code></pre>
           <h2>Payloads</h2>
           <ul>
             <li>That is not the full payload!</li>
-            <li>Self contained payloads are more stable, but usualy too big.</li>
+            <li>Self contained payloads are more stable, but usually too big.</li>
             <li>Windows Meterpreter is 700&nbsp;kB.</li>
             <li>So payloads are sent in stages.</li>
             <li>The included code only contains the stager.</li>
@@ -345,9 +345,9 @@ exploit</code></pre>
             <li>Tunnels communication over HTTP using SSL.</li>
             <li>Advantages:
               <ul>
-                <li>HTTPS over port 443 is permited in even in corporate environments.</li>
+                <li>HTTPS over port 443 is permitted in even in corporate environments.</li>
                 <li>Inner traffic cannot be analyzed.</li>
-                <li>HTTP doesn't mentain a TCP session.</li>
+                <li>HTTP doesn't maintain a TCP session.</li>
               </ul>
             </li>
           </ul>
@@ -358,7 +358,7 @@ exploit</code></pre>
           <ul>
             <li>A technique for loading code which provides a reflective loader function.</li>
             <li>The initial code downloads more stages directly into memory (by any means: raw sockets, HTTPS etc).</li>
-            <li>The reflective loader alocated Read-Write-Execute memory and constructs the executable code there.</li>
+            <li>The reflective loader allocated Read-Write-Execute memory and constructs the executable code there.</li>
             <li>The code can be used as any other library.</li>
             <li>Advantages: hard to detect. Languages like Java use JIT compilation to write code in memory and execute it.</li>
           </ul>
@@ -367,7 +367,7 @@ exploit</code></pre>
         <section class='bigger'>
           <h2>Some payloads:</h2>
           <ul>
-            <li>PassiveX: circumvents firewalls by using an ActiveX control to create a hidden IE instance which can comunicate freely with the attacker.</li>
+            <li>PassiveX: circumvents firewalls by using an ActiveX control to create a hidden IE instance which can communicate freely with the attacker.</li>
             <li>NoNX: bypasses the no-execute bit implementation in Windows (Data Execution Prevention).</li>
             <li>Meterpreter: the biggest and most powerful payload.</li>
           </ul>
@@ -394,16 +394,16 @@ exploit</code></pre>
             <li>migrate: migrate to another process.</li>
             <li>shell: get a standard shell (like cmd).</li>
             <li>webcam_snap: take a webcam picture.</li>
-            <li>...and many other.</li>
+            <li>Other things: capture keyboard, microphone; generate clicks and keystrokes...</li>
           </ul>
         </section>
         
-        <section class='cover' data-state="shaderload">
+        <section class='cover' data-state="shaderload" data-background='#000000'>
           <h1>IE8 Heap Spray</h1>
         </section>
         
         <section class='bigger' data-state="shaderunload">
-          <h2>Video demo</h2>
+          <iframe class="youtube-player" type="text/html" width="800" height="600" src="http://www.youtube.com/embed/HXLo3WK0u3w" allowfullscreen frameborder="0"></iframe>
         </section>
         
         <section class='bigger'>
@@ -424,7 +424,7 @@ exploit</code></pre>
         <section class='bigger'>
           <h2>Heap spraying</h2>
           <ul>
-            <li>Fills large ammounts of memory with the shellcode and NOP sleds in order to get the right locations.</li>
+            <li>Fills large amounts of memory with the shellcode and NOP sleds in order to get the right locations.</li>
             <li>It tries to compensate for the non-determinism of induced by time, chance alignments and other factors.</li>
             <li>Takes advantage of the fact that heap allocations are usually sequential.</li>
           </ul>
@@ -444,12 +444,12 @@ exploit</code></pre>
           </ul>
         </section>
         
-        <section class='cover' data-state="shaderload">
+        <section class='cover' data-state="shaderload" data-background='#000000'>
           <h1>Web Scan & Java break-in</h1>
         </section>
         
         <section data-state="shaderunload">
-          <h2>Video demo</h2>
+          <iframe class="youtube-player" type="text/html" width="800" height="600" src="http://www.youtube.com/embed/ckUY13BtRGI" allowfullscreen frameborder="0"></iframe>
         </section>
         
         <section class='bigger' data-state="shaderunload">
@@ -464,18 +464,18 @@ exploit</code></pre>
           </ul>
         </section>
         
-        <section class='cover' data-state="shaderload">
+        <section class='cover' data-state="shaderload" data-background='#000000'>
           <h1>Java Sandbox Break-out</h1>
         </section>
         
         <section data-state="shaderunload">
-          <h2>Video demo</h2>
+          <iframe class="youtube-player" type="text/html" width="800" height="600" src="http://www.youtube.com/embed/rUXqLBC-c-0" allowfullscreen frameborder="0"></iframe>
         </section>
         
         <section class='bigger'>
           <ul>
             <li>Affects Oracle Java versions prior to 7u25.</li>
-            <li>Runs from an applet and escapes the Java sandbox through memory coruption bug.</li>
+            <li>Runs from an applet and escapes the Java sandbox through memory corruption bug.</li>
             <li>It's caused by invalid array indexing in the storeImageArray() function on the native jre/bin/awt.dll.</li>
             <li>This code calls storeImageArray and causes the coruption:</li>
             <li><code>new AffineTransformOp(new java.awt.geom.AffineTransform(1,0,0,1,0,0), null);</code></li>
@@ -495,7 +495,7 @@ exploit</code></pre>
           <h2>Conclusions</h2>
           <ul>
             <li>Metasploit is the most successful such framework.</li>
-            <li>Considered the de facto exploit development framework.</li>
+            <li>Considered the <em>de facto</em> exploit development framework.</li>
           </ul>
           <h2>Others</h2>
           <ul>
