@@ -1,3 +1,0 @@
-Software Security Projects
-==========================
-
