@@ -1,3 +1,7 @@
+# This repository has been moved to [gitlab.com/paul-nechifor/software-security-slides](http://gitlab.com/paul-nechifor/software-security-slides).
+
+Old readme:
+
 # Software Security Projects
 
 My presentations from the Software Security course.
